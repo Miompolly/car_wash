@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiClient from "../api/client";
 import Navbar from "../components/Navbar";
+import axios from "axios";
 
 
 
@@ -23,10 +24,12 @@ const [loading, setLoading] = useState(true);
   const fetchCars = async () => {
     try {
 
-      const res = await apiClient.get("/cars/list");
+      const res = await axios.get("http://localhost:5000/api/cars/list");
 
 
       setCars(res.data);
+
+
     } catch (error) {
       console.error(error);
       alert(error.response?.data?.message || "Failed to load cars");
@@ -50,7 +53,7 @@ const [loading, setLoading] = useState(true);
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await apiClient.post("/cars", {
+      await axios.post("http://localhost:5000/api/cars", {
         plateNumber,
         carType,
         carSize,
