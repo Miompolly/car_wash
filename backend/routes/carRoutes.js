@@ -12,7 +12,8 @@ router.put("/:id", carController.updateCar);
 router.delete("/:id", auth, carController.deleteCar);
 
 
-router.get("/list",auth, carController.getCars);
+router.get("/", carController.getCars);
+router.get("/list", carController.getCars);
 
 
 router.get("/:id", auth, carController.getCar);

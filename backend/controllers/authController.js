@@ -6,19 +6,26 @@ const SECRET = "mysecretkey"; // later move to .env
 
 // REGISTER
 exports.register = async (req, res) => {
-  const { Username, Password, Role } = req.body;
+  const username = req.body.Username || req.body.username;
+  const password = req.body.Password || req.body.password;
+  const role = req.body.Role || req.body.role || "staff";
 
-  User.findUserByUsername(Username, async (err, result) => {
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  User.findUserByUsername(username, async (err, result) => {
+    if (err) return res.status(500).json(err);
     if (result.length > 0) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(Password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
-      Username,
+      Username: username,
       Password: hashedPassword,
-      Role
+      Role: role
     };
 
     User.createUser(newUser, (err, data) => {
@@ -30,16 +37,22 @@ exports.register = async (req, res) => {
 
 // LOGIN
 exports.login = (req, res) => {
-  const { Username, Password } = req.body;
+  const username = req.body.Username || req.body.username;
+  const password = req.body.Password || req.body.password;
 
-  User.findUserByUsername(Username, async (err, result) => {
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  User.findUserByUsername(username, async (err, result) => {
+    if (err) return res.status(500).json(err);
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const user = result[0];
 
-    const isMatch = await bcrypt.compare(Password, user.Password);
+    const isMatch = await bcrypt.compare(password, user.Password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }

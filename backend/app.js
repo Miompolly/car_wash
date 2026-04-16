@@ -10,6 +10,8 @@ const authRoutes = require("./routes/authRoutes");
 const app = express();
 
 app.use(cors());
+
+
 app.use(express.json());
 app.use(bodyParser.json())
 
@@ -17,7 +19,8 @@ app.use(bodyParser.json())
 
 app.use("/api/cars", carRoutes);
 app.use("/api/packages", packageRoutes);
-app.use("/api/services", serviceRoutes);
+// app.use("/api/services", serviceRoutes);
+app.use("/api/service-records", serviceRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/auth", authRoutes);
 
